@@ -26,6 +26,8 @@ int example1_init(void) {
         person->month = 6+i;
         person->year = 2000+i;
         INIT_LIST_HEAD(&person->list);
+
+        list_add_tail(&person->list, &birthday_list);
     }
 
     printk("List creation finished");
@@ -34,13 +36,15 @@ int example1_init(void) {
 
 
 void example1_exit(void) {
-    struct birthday *person;
+    birthday *person, *next;
 
-    list_for_each_entry(person, &birthday_list, list) {
+    list_for_each_entry_safe(person, next, &birthday_list, list) {
         printk("%d %d %d\n", person->day, person->month, person->year);
         list_del(&person->list);
         kfree(person);
     }
+
+    printk("Done");
 }
 
 
